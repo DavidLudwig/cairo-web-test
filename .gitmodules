@@ -1,0 +1,9 @@
+[submodule "external/SDL"]
+	path = external/SDL
+	url = https://github.com/spurious/SDL-mirror
+[submodule "external/cairo"]
+	path = external/cairo
+	url = git://anongit.freedesktop.org/cairo
+[submodule "external/pixman"]
+	path = external/pixman
+	url = git://anongit.freedesktop.org/pixman
