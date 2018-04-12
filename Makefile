@@ -56,6 +56,7 @@ CAIRO_SRCS := \
 	external/cairo/src/cairo-font-face.c \
 	external/cairo/src/cairo-font-options.c \
 	external/cairo/src/cairo-freelist.c \
+	external/cairo/src/cairo-ft-font.c \
 	external/cairo/src/cairo-gstate.c \
 	external/cairo/src/cairo-hash.c \
 	external/cairo/src/cairo-image-compositor.c \
@@ -110,18 +111,33 @@ CAIRO_SRCS := \
 	external/cairo/src/cairo-wideint.c \
 	external/cairo/src/cairo.c
 
-green_circle.html: pixman.o cairo.o green_circle.cpp
+APP_CPPFLAGS := \
+	-O2 \
+	-s USE_SDL=2 \
+	-s USE_LIBPNG=1 \
+	-s USE_ZLIB=1 \
+	-s USE_FREETYPE=1 \
+	-I external/cairo/src/ \
+	-I external/pixman/pixman \
+	-I . \
+	pixman.o \
+	cairo.o
+
+APP_DEPS := pixman.o cairo.o
+
+all: hello_world.html green_circle.html
+
+hello_world.html: $(APP_DEPS) hello_world.cpp
 	em++ \
-		-O2 \
-		-s USE_SDL=2 \
-		-s USE_LIBPNG=1 \
-		-s USE_ZLIB=1 \
-		-I external/cairo/src/ \
-		-I external/pixman/pixman \
-		-I . \
+		$(APP_CPPFLAGS) \
+		--preload-file assets/Vegur-Bold.ttf \
+		hello_world.cpp \
+		-o hello_world.html
+
+green_circle.html: $(APP_DEPS) green_circle.cpp
+	em++ \
+		$(APP_CPPFLAGS) \
 		green_circle.cpp \
-		pixman.o \
-		cairo.o \
 		-o green_circle.html
 
 pixman.o: Makefile $(PIXMAN_SRCS)
@@ -139,6 +155,7 @@ pixman.o: Makefile $(PIXMAN_SRCS)
 cairo.o: Makefile $(CAIRO_SRCS)
 	emcc \
 		-O2 \
+		-s USE_FREETYPE=1 \
 		-I external/cairo/src/ \
 		-I external/pixman/pixman \
 		-I . \
@@ -150,4 +167,4 @@ cairo.o: Makefile $(CAIRO_SRCS)
 		-o cairo.o
 
 clean:
-	rm -f pixman.o cairo.o green_circle.html* green_circle.js
+	rm -f pixman.o cairo.o *.html *.mem *.js *.data
