@@ -117,6 +117,7 @@ APP_CPPFLAGS := \
 	-s USE_LIBPNG=1 \
 	-s USE_ZLIB=1 \
 	-s USE_FREETYPE=1 \
+	-I external \
 	-I external/cairo/src/ \
 	-I external/pixman/pixman \
 	-I . \
@@ -143,8 +144,8 @@ green_circle.html: $(APP_DEPS) green_circle.cpp
 pixman.o: Makefile $(PIXMAN_SRCS)
 	emcc \
 		-O2 \
+		-I external \
 		-I external/pixman/pixman \
-		-I . \
 		-DPACKAGE \
 		-DPIXMAN_NO_TLS \
 		-Wno-shift-negative-value \
@@ -156,9 +157,9 @@ cairo.o: Makefile $(CAIRO_SRCS)
 	emcc \
 		-O2 \
 		-s USE_FREETYPE=1 \
+		-I external \
 		-I external/cairo/src/ \
 		-I external/pixman/pixman \
-		-I . \
 		-DCAIRO_FEATURES_H \
 		-Wno-enum-conversion \
 		-Wno-parentheses-equality \
