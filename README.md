@@ -1,4 +1,4 @@
-# DavidL's SG13-centric Research
+# DavidL's SG13 Miscellany
 
 This is where I keep miscellaneous bits of code related to ISO C++ SG13 work.  Almost all of it compiles down to HTML5 + JavaScript code.
 
