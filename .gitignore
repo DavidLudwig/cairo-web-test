@@ -1,5 +1,6 @@
 *.data
-*.html
+green_circle.html*
+hello_world.html*
 *.js
 *.mem
 *.o

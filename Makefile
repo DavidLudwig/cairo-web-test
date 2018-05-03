@@ -117,6 +117,7 @@ APP_CPPFLAGS := \
 	-s USE_LIBPNG=1 \
 	-s USE_ZLIB=1 \
 	-s USE_FREETYPE=1 \
+	-s ALLOW_MEMORY_GROWTH=1 \
 	-I external \
 	-I external/cairo/src/ \
 	-I external/pixman/pixman \
@@ -124,7 +125,14 @@ APP_CPPFLAGS := \
 	pixman.o \
 	cairo.o
 
-APP_DEPS := pixman.o cairo.o
+	# DavidL: add this to APP_CPPFLAGS, when testing canvas resizing.  Eventually, though, all HTML files
+	#   should permit easy-as-possible resizing.  The template below is hackish, and doesn't look all that
+	#   good, IMHO.
+	#
+	# --shell-file template_resizable_canvas.html \
+
+
+APP_DEPS := pixman.o cairo.o template_resizable_canvas.html
 
 all: hello_world.html green_circle.html
 
@@ -168,4 +176,4 @@ cairo.o: Makefile $(CAIRO_SRCS)
 		-o cairo.o
 
 clean:
-	rm -f pixman.o cairo.o *.html *.mem *.js *.data
+	rm -f pixman.o cairo.o green_circle.html* hello_world.html* *.mem *.js *.data
