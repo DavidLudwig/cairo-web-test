@@ -21,7 +21,10 @@ make
 ### MacOS prerequisite notes
 
 In terms of prerequisities:
-* GNU Make can be found in Xcode's Command Line Tools, more info on which is listed at https://developer.apple.com/xcode/features/
+* GNU Make can be found in Xcode's Command Line Tools.  This is typically installed after running Xcode for the first time.  It can also be installed by running the following (after installing Xcode):
+
+```xcode-select --install```
+
 * Emscripten can be installed via [HomeBrew](https://brew.sh) (among other means), using the following command:
 
 ```brew install emscripten```
