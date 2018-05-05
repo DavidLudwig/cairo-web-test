@@ -74,7 +74,7 @@ int context::start(
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         window_width, window_height,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+        SDL_WINDOW_RESIZABLE);
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
     on_resize(window_width, window_height);
     emscripten_set_main_loop_arg(tick, (void *)this, 60, 1);
