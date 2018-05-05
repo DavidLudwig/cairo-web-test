@@ -17,5 +17,5 @@ void draw(context * ctx, cairo_t * cr) {
 }
 
 int main(int, char **) {
-    return ctx.start("green circle", ctx.width, ctx.height, &draw);
+    return ctx.start("green circle", 512, 512, &draw);
 }
