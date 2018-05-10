@@ -135,6 +135,7 @@ APP_CPPFLAGS := \
 	# -I external/SDL/include \
 	# external/SDL/build/build/.libs/libSDL2.a \
 	# external/SDL/build/build/.libs/libSDL2main.a \
+	#
 
 
 APP_DEPS := pixman.o cairo.o ui.h ui.cpp template_page.html
