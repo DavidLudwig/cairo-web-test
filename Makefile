@@ -113,6 +113,7 @@ CAIRO_SRCS := \
 
 APP_CPPFLAGS := \
 	-std=c++1z \
+	--shell-file template_page.html \
 	-O2 \
 	-s USE_SDL=2 \
 	-s USE_LIBPNG=1 \
@@ -134,7 +135,7 @@ APP_CPPFLAGS := \
 	# --shell-file template_resizable_canvas.html \
 
 
-APP_DEPS := pixman.o cairo.o ui.h ui.cpp template_resizable_canvas.html
+APP_DEPS := pixman.o cairo.o ui.h ui.cpp template_page.html
 
 all: hello_world.html green_circle.html
 
