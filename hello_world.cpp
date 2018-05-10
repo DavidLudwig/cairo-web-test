@@ -36,5 +36,5 @@ int main(int, char **) {
     FT_New_Face(ft_lib, font_file_name, 0, &ft_font);
     cr_font = cairo_ft_font_face_create_for_ft_face(ft_font, 0);
 
-    return ctx.start("Hello World", 512, 512, &draw);
+    return ctx.start("Hello World", &draw);
 }

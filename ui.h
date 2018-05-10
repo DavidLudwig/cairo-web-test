@@ -20,8 +20,8 @@ struct context {
     SDL_Texture * tex = nullptr;
     SDL_Window * sdl_window = nullptr;
     SDL_Renderer * sdl_renderer = nullptr;
-    int width = 512;
-    int height = 512;
+    int width = 0;
+    int height = 0;
     draw_t draw = nullptr;
 
     void on_resize(int new_width, int new_height);
@@ -29,8 +29,6 @@ struct context {
     void tick();
     int start(
         const char * window_name,
-        int window_width,
-        int window_height,
         draw_t draw
     );
 };

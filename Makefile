@@ -128,11 +128,13 @@ APP_CPPFLAGS := \
 	pixman.o \
 	cairo.o
 
-	# DavidL: add this to APP_CPPFLAGS, when testing canvas resizing.  Eventually, though, all HTML files
-	#   should permit easy-as-possible resizing.  The template below is hackish, and doesn't look all that
-	#   good, IMHO.
-	#
-	# --shell-file template_resizable_canvas.html \
+	##
+	## DavidL: use the following instead of '-s USE_SDL=2', to use a locally-built copy of SDL2
+	##
+	# -s "EXTRA_EXPORTED_RUNTIME_METHODS=['Pointer_stringify']" \
+	# -I external/SDL/include \
+	# external/SDL/build/build/.libs/libSDL2.a \
+	# external/SDL/build/build/.libs/libSDL2main.a \
 
 
 APP_DEPS := pixman.o cairo.o ui.h ui.cpp template_page.html
