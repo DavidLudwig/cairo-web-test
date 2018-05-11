@@ -22,7 +22,7 @@ $(call get_target,hello_world.cpp) : SPECIFIC_CPPFLAGS = --preload-file assets/V
 DIRS = build/wwwroot build/libs
 
 # APP_DEPS: Makefile dependencies that must be met, before building a demo app
-APP_DEPS := build/wwwroot Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html
+APP_DEPS := Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html
 
 # APP_CPPFLAGS: compiler flags added to each demo app
 APP_CPPFLAGS := \
@@ -51,9 +51,6 @@ APP_CPPFLAGS := \
 	# external/SDL/build/build/.libs/libSDL2main.a \
 	#
 
-
-# LIB_DEPS: Makefile dependencies that must be met, before a dependency library is built
-LIB_DEPS := build/libs
 
 # LIB_PIXMAN_SRCS: source files for the 'Pixman' library (which is a dependency of Cairo)
 LIB_PIXMAN_SRCS := \
@@ -184,7 +181,7 @@ $(DIRS) :
 	mkdir -p $@
 
 # $(APP_OBJS): target to build an app
-$(APP_OBJS) : $(APP_DEPS) $(@:build/wwwroot/%.html=%.cpp)
+$(APP_OBJS) : $(APP_DEPS) $(@:build/wwwroot/%.html=%.cpp) | build/wwwroot
 	em++ \
 		$(APP_CPPFLAGS) \
 		$(SPECIFIC_CPPFLAGS) \
@@ -192,7 +189,7 @@ $(APP_OBJS) : $(APP_DEPS) $(@:build/wwwroot/%.html=%.cpp)
 		-o $@
 
 # .../pixman.o: target to build the 'Pixman' library
-build/libs/pixman.o: $(LIB_DEPS) $(LIB_PIXMAN_SRCS)
+build/libs/pixman.o: $(LIB_PIXMAN_SRCS) | build/libs
 	emcc \
 		-O2 \
 		-I external \
@@ -205,7 +202,7 @@ build/libs/pixman.o: $(LIB_DEPS) $(LIB_PIXMAN_SRCS)
 		-o build/libs/pixman.o
 
 # .../cairo.o: target to build the 'Cairo' library
-build/libs/cairo.o: $(LIB_DEPS) $(LIB_CAIRO_SRCS)
+build/libs/cairo.o: $(LIB_CAIRO_SRCS) | build/libs
 	emcc \
 		-O2 \
 		-s USE_FREETYPE=1 \
