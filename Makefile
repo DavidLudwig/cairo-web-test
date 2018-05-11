@@ -180,12 +180,12 @@ clean:
 $(DIRS) :
 	mkdir -p $@
 
-# $(APP_OBJS): target to build an app
-$(APP_OBJS) : $(APP_DEPS) $(@:build/wwwroot/%.html=%.cpp) | build/wwwroot
+# build/wwwroot/%.html: target to build an app
+build/wwwroot/%.html : %.cpp $(APP_DEPS) | build/wwwroot
 	em++ \
 		$(APP_CPPFLAGS) \
 		$(SPECIFIC_CPPFLAGS) \
-		$(@:build/wwwroot/%.html=%.cpp) \
+		$< \
 		-o $@
 
 # .../pixman.o: target to build the 'Pixman' library
