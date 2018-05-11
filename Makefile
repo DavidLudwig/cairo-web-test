@@ -1,5 +1,62 @@
 
-PIXMAN_SRCS := \
+#
+# Demo-apps get added here
+#
+APP_SRCS := hello_world.cpp green_circle.cpp
+
+# Utility function(s); do not edit
+get_target = $(patsubst %.cpp,build/wwwroot/%.html,$(1))
+
+#
+# Per-app build settings get added here
+#
+$(call get_target,hello_world.cpp) : SPECIFIC_CPPFLAGS = --preload-file assets/Vegur-Bold.ttf
+
+
+
+#
+# No app-specific  settings are listed, below this line
+#
+
+# DIRS: directories created when building
+DIRS = build/wwwroot build/libs
+
+# APP_DEPS: Makefile dependencies that must be met, before building a demo app
+APP_DEPS := build/wwwroot Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html
+
+# APP_CPPFLAGS: compiler flags added to each demo app
+APP_CPPFLAGS := \
+	-std=c++1z \
+	--shell-file template_page.html \
+	-O2 \
+	-s USE_SDL=2 \
+	-s USE_LIBPNG=1 \
+	-s USE_ZLIB=1 \
+	-s USE_FREETYPE=1 \
+	-s ALLOW_MEMORY_GROWTH=1 \
+	-I external \
+	-I external/cairo/src/ \
+	-I external/pixman/pixman \
+	-I . \
+	ui.cpp \
+	build/libs/pixman.o \
+	build/libs/cairo.o
+
+	##
+	## DavidL: use the following instead of '-s USE_SDL=2', to use a locally-built copy of SDL2
+	##
+	# -s "EXTRA_EXPORTED_RUNTIME_METHODS=['Pointer_stringify']" \
+	# -I external/SDL/include \
+	# external/SDL/build/build/.libs/libSDL2.a \
+	# external/SDL/build/build/.libs/libSDL2main.a \
+	#
+
+
+# LIB_DEPS: Makefile dependencies that must be met, before a dependency library is built
+LIB_DEPS := build/libs
+
+# LIB_PIXMAN_SRCS: source files for the 'Pixman' library (which is a dependency of Cairo)
+LIB_PIXMAN_SRCS := \
 	external/pixman/pixman/pixman-access.c \
 	external/pixman/pixman/pixman-access-accessors.c \
 	external/pixman/pixman/pixman-arm.c \
@@ -27,7 +84,8 @@ PIXMAN_SRCS := \
 	external/pixman/pixman/pixman-x86.c \
 	external/pixman/pixman/pixman.c
 
-CAIRO_SRCS := \
+# LIB_CAIRO_SRCS: source files for the 'Cairo' library
+LIB_CAIRO_SRCS := \
 	external/cairo/src/cairo-analysis-surface.c \
 	external/cairo/src/cairo-arc.c \
 	external/cairo/src/cairo-array.c \
@@ -111,51 +169,30 @@ CAIRO_SRCS := \
 	external/cairo/src/cairo-wideint.c \
 	external/cairo/src/cairo.c
 
-APP_CPPFLAGS := \
-	-std=c++1z \
-	--shell-file template_page.html \
-	-O2 \
-	-s USE_SDL=2 \
-	-s USE_LIBPNG=1 \
-	-s USE_ZLIB=1 \
-	-s USE_FREETYPE=1 \
-	-s ALLOW_MEMORY_GROWTH=1 \
-	-I external \
-	-I external/cairo/src/ \
-	-I external/pixman/pixman \
-	-I . \
-	ui.cpp \
-	pixman.o \
-	cairo.o
+# APP_OBJS: a list of all, built demo apps
+APP_OBJS := $(patsubst %.cpp,build/wwwroot/%.html,$(APP_SRCS))
 
-	##
-	## DavidL: use the following instead of '-s USE_SDL=2', to use a locally-built copy of SDL2
-	##
-	# -s "EXTRA_EXPORTED_RUNTIME_METHODS=['Pointer_stringify']" \
-	# -I external/SDL/include \
-	# external/SDL/build/build/.libs/libSDL2.a \
-	# external/SDL/build/build/.libs/libSDL2main.a \
-	#
+# all: target to build all apps
+all: $(APP_OBJS)
 
+# clean: target to clean up all built files
+clean:
+	rm -rf build
 
-APP_DEPS := pixman.o cairo.o ui.h ui.cpp template_page.html
+# $(DIRS): target to create specific output directories
+$(DIRS) :
+	mkdir -p $@
 
-all: hello_world.html green_circle.html
-
-hello_world.html: $(APP_DEPS) hello_world.cpp
+# $(APP_OBJS): target to build an app
+$(APP_OBJS) : $(APP_DEPS) $(@:build/wwwroot/%.html=%.cpp)
 	em++ \
 		$(APP_CPPFLAGS) \
-		--preload-file assets/Vegur-Bold.ttf \
-		hello_world.cpp \
-		-o hello_world.html
+		$(SPECIFIC_CPPFLAGS) \
+		$(@:build/wwwroot/%.html=%.cpp) \
+		-o $@
 
-green_circle.html: $(APP_DEPS) green_circle.cpp
-	em++ \
-		$(APP_CPPFLAGS) \
-		green_circle.cpp \
-		-o green_circle.html
-
-pixman.o: Makefile $(PIXMAN_SRCS)
+# .../pixman.o: target to build the 'Pixman' library
+build/libs/pixman.o: $(LIB_DEPS) $(LIB_PIXMAN_SRCS)
 	emcc \
 		-O2 \
 		-I external \
@@ -164,10 +201,11 @@ pixman.o: Makefile $(PIXMAN_SRCS)
 		-DPIXMAN_NO_TLS \
 		-Wno-shift-negative-value \
 		-Wno-tautological-constant-out-of-range-compare \
-		$(PIXMAN_SRCS) \
-		-o pixman.o
+		$(LIB_PIXMAN_SRCS) \
+		-o build/libs/pixman.o
 
-cairo.o: Makefile $(CAIRO_SRCS)
+# .../cairo.o: target to build the 'Cairo' library
+build/libs/cairo.o: $(LIB_DEPS) $(LIB_CAIRO_SRCS)
 	emcc \
 		-O2 \
 		-s USE_FREETYPE=1 \
@@ -178,8 +216,6 @@ cairo.o: Makefile $(CAIRO_SRCS)
 		-Wno-enum-conversion \
 		-Wno-parentheses-equality \
 		-Wno-incompatible-pointer-types \
-		$(CAIRO_SRCS) \
-		-o cairo.o
+		$(LIB_CAIRO_SRCS) \
+		-o build/libs/cairo.o
 
-clean:
-	rm -f pixman.o cairo.o green_circle.html* hello_world.html* *.mem *.js *.data
