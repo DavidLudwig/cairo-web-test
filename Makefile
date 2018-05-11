@@ -21,9 +21,6 @@ $(call get_target,hello_world.cpp) : SPECIFIC_CPPFLAGS = --preload-file assets/V
 # DIRS: directories created when building
 DIRS = build/wwwroot build/libs
 
-# APP_DEPS: Makefile dependencies that must be met, before building a demo app
-APP_DEPS := Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html
-
 # APP_CPPFLAGS: compiler flags added to each demo app
 APP_CPPFLAGS := \
 	-std=c++1z \
@@ -181,7 +178,7 @@ $(DIRS) :
 	mkdir -p $@
 
 # build/wwwroot/%.html: target to build an app
-build/wwwroot/%.html : %.cpp $(APP_DEPS) | build/wwwroot
+build/wwwroot/%.html : %.cpp Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html | build/wwwroot
 	em++ \
 		$(APP_CPPFLAGS) \
 		$(SPECIFIC_CPPFLAGS) \
