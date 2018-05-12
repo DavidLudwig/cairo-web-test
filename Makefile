@@ -2,7 +2,7 @@
 #
 # Demo-apps get added here
 #
-APP_SRCS := hello_world.cpp green_circle.cpp
+APP_SRCS := hello_world.cpp green_circle.cpp show_image.cpp
 
 # Utility function(s); do not edit
 get_target = $(patsubst %.cpp,build/wwwroot/%.html,$(1))
@@ -11,6 +11,7 @@ get_target = $(patsubst %.cpp,build/wwwroot/%.html,$(1))
 # Per-app build settings get added here
 #
 $(call get_target,hello_world.cpp) : SPECIFIC_CPPFLAGS = --preload-file assets/Vegur-Bold.ttf
+$(call get_target,show_image.cpp) : SPECIFIC_CPPFLAGS = --preload-file assets/sample.png
 
 
 
@@ -121,6 +122,7 @@ LIB_CAIRO_SRCS := \
 	external/cairo/src/cairo-mono-scan-converter.c \
 	external/cairo/src/cairo-no-compositor.c \
 	external/cairo/src/cairo-observer.c \
+	external/cairo/src/cairo-output-stream.c \
 	external/cairo/src/cairo-path-bounds.c \
 	external/cairo/src/cairo-path-fill.c \
 	external/cairo/src/cairo-path-fixed.c \
@@ -132,6 +134,7 @@ LIB_CAIRO_SRCS := \
 	external/cairo/src/cairo-path.c \
 	external/cairo/src/cairo-pattern.c \
 	external/cairo/src/cairo-pen.c \
+	external/cairo/src/cairo-png.c \
 	external/cairo/src/cairo-polygon-intersect.c \
 	external/cairo/src/cairo-polygon-intersect.c \
 	external/cairo/src/cairo-polygon-reduce.c \
@@ -203,6 +206,7 @@ build/libs/cairo.o: $(LIB_CAIRO_SRCS) | build/libs
 	emcc \
 		-O2 \
 		-s USE_FREETYPE=1 \
+		-s USE_LIBPNG=1 \
 		-I external \
 		-I external/cairo/src/ \
 		-I external/pixman/pixman \
