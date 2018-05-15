@@ -2,7 +2,7 @@
 #
 # Demo-apps get added here
 #
-APP_SRCS := hello_world.cpp green_circle.cpp show_image.cpp
+APP_SRCS := hello_world.cpp green_circle.cpp show_image.cpp simple_paint.cpp
 
 # Utility function(s); do not edit
 get_target = $(patsubst %.cpp,build/wwwroot/%.html,$(1))
@@ -36,7 +36,6 @@ APP_CPPFLAGS := \
 	-I external/cairo/src/ \
 	-I external/pixman/pixman \
 	-I . \
-	ui.cpp \
 	build/libs/pixman.o \
 	build/libs/cairo.o
 
@@ -183,10 +182,12 @@ $(DIRS) :
 # build/wwwroot/%.html: target to build an app
 build/wwwroot/%.html : %.cpp Makefile build/libs/pixman.o build/libs/cairo.o ui.h ui.cpp template_page.html | build/wwwroot
 	em++ \
+		$< \
+		ui.cpp \
 		$(APP_CPPFLAGS) \
 		$(SPECIFIC_CPPFLAGS) \
-		$< \
-		-o $@
+		-o $@ \
+
 
 # .../pixman.o: target to build the 'Pixman' library
 build/libs/pixman.o: $(LIB_PIXMAN_SRCS) | build/libs
